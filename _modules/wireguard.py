@@ -61,7 +61,7 @@ def wg_genkey():
     '''
     genkey = Popen(['wg', 'genkey'], shell=False, stdout=PIPE).communicate()[0]
     pubkey = Popen(['wg', 'pubkey'], shell=False, stdin=PIPE, stdout=PIPE).communicate(input=genkey)[0]
-    key = { 'pub' : pubkey.strip(), 'priv' : genkey.strip() }
+    key = { 'pub' : pubkey.strip().decode('utf8'), 'priv' : genkey.strip().decode('utf8') }
     return key
 
 def _read_yml_conf(peer_conf_dir, interface):
