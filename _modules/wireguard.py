@@ -43,12 +43,14 @@ def _write_classic_config(peer_conf_dir, peer_cfg, qrcode, qrcode_type):
                 open(yml_file, 'w').write(yaml.dump(peer_cfg, default_flow_style=False))
 
                 if qrcode:
-                    qrcode = Popen(['qrencode', '-t', qrcode_type], shell=False, stdin=PIPE, stdout=PIPE).communicate(input=open('{}/{}_{}.conf'.format(peer_conf_dir, interface, peer), 'r').read() )[0]
+                    qrcode = b'test1'
+                    qrcode = Popen(['qrencode', '-t', qrcode_type], shell=False, stdin=PIPE, stdout=PIPE).communicate(input=open('{}/{}_{}.conf'.format(peer_conf_dir, interface, peer), 'r').read().encode('utf8') )[0]
+                    logging.warning(qrcode)
                     if qrcode_type == 'ansiutf8':
                         # https://stackoverflow.com/questions/14693701/how-can-i-remove-the-ansi-escape-sequences-from-a-string-in-python/14693789#14693789
                         # Definitely the more efficient way compared with my own regex before...
                         ansi_escape = re.compile(r'\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])')
-                        qrcode = ansi_escape.sub('', qrcode)
+                        qrcode = ansi_escape.sub('', qrcode.decode('utf8'))
                     ret['peers'][peer].update({ 'qrcode' : str(qrcode)})
         return ret
     else:
