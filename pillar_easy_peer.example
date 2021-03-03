@@ -1,0 +1,45 @@
+wireguard:
+  interfaces:
+    wg1:
+      # The two following keys are non-wireguard options.
+      # Delete the config file. The interface will also be stopped and disables.
+      # Defaults to False.
+      #delete: False
+      #delete: True
+      # Start and enable the service. Setting this to false causes the interface
+      # to be stopped and disabled. Defaults to True.
+      #enable: True
+      easy_peer:
+        globals:
+          Interface:
+            DNS: <YOUR DNS RESOLVER>
+          Peer:
+            Endpoint: <WG SERVER OR ROUTER IP>:51820
+            PersistentKeepalive: 25
+            AllowedIPs:
+              - 0.0.0.0/0
+              - <YOUR NETWORK/XY>
+
+        peers:
+          client-1:
+            Peer:
+              PersistentKeepalive = 120
+            Interface:
+              DNS: 8.8.8.8
+
+          client-2: {}
+          client-3: {}
+          client-4: {}
+
+      config:
+        Address: 10.10.10.1/24
+        ListenPort: 51820
+
+        PostUp: 'iptables -A FORWARD -i wg1 -j ACCEPT; iptables -t nat -A POSTROUTING -o ens32 -j MASQUERADE'
+        PostDown: 'iptables -D FORWARD -i wg1 -j ACCEPT; iptables -t nat -D POSTROUTING -o ens32 -j MASQUERADE'
+
+        # It is very important to quote off. Jinja expands off without quotes to
+        # False which will result in 'table' not being set in the config file,
+        # resulting in defaulting to auto.
+        Table: 'off'
+    
