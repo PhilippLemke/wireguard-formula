@@ -33,6 +33,24 @@ start a list under a key. If the configuration format allows a single comma
 separated string for the respective key, they all will appear in the config
 file. Also see `pillar.example`.
 
+# Available modules
+## wireguard.create_peer_config
+This module is designed to manage peers easily which are connected to the configured wireguard instance(s). It's add-on for this formular and not a mandatory component.
+
+The module creates the following parts of configuration:
+- Standard Wireguard configuration files
+- QR-Codes from Wireguard configuration files (e.g. for smartphone import)
+- Additional Pillar File (easy_peer.sls) to include in pillar top.sls 
+
+Define-Pillar: (e.g. /srv/pillar/wireguard_new.sls)
+easy_peer:
+
+
+
+### Requirements
+
+
+
 # Available states
 
 No states. Include `wireguard` in the top.sls file.
